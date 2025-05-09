@@ -34,10 +34,15 @@ body {
   color: var(--dark-gray);
   background-color: var(--white);
   overflow-x: hidden;
-  font-feature-settings: 'calt' 1, 'case' 1, 'ss01' 1;
+  font-feature-settings: "calt" 1, "case" 1, "ss01" 1;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -178,6 +183,8 @@ img {
   transition: var(--transition);
   background-color: transparent;
   backdrop-filter: blur(0px);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .header.scrolled {
@@ -281,10 +288,18 @@ img {
   cursor: pointer;
   color: #fff;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
   width: 48px;
   height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu-btn .menu-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .mobile-menu-btn .menu-close {
@@ -318,6 +333,9 @@ img {
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .navbar.active {
@@ -340,6 +358,8 @@ img {
     width: 100%;
     display: block;
     padding: 0.75rem 0;
+    touch-action: manipulation;
+    min-height: 44px;
   }
 
   .navbar a.contact-btn {
@@ -1547,7 +1567,7 @@ img {
   .service-detailed.reversed {
     direction: ltr;
   }
-  
+
   .mission-vision {
     width: 100%;
     left: 0;
@@ -1558,65 +1578,66 @@ img {
 }
 
 @media (max-width: 768px) {
-  /* Improved mobile menu handling */
+  /* Fix mobile menu toggle display */
+  .menu-toggle {
+    display: flex;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Reduce paint operations and improve responsiveness */
+  .header,
+  .navbar,
+  .hero-content,
+  .service-card,
+  .feature,
+  .project-overlay,
+  .testimonial,
+  .contact-form {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* Optimize image loading */
+  img {
+    content-visibility: auto;
+  }
+
+  /* Better touch targets */
+  button,
+  .btn,
+  .contact-btn,
+  select,
+  input[type="submit"],
   .navbar a {
-    font-weight: 500;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
-  
-  .navbar a::after {
-    height: 3px;
+
+  /* Optimize transitions for mobile */
+  .btn,
+  .navbar a,
+  .service-card,
+  .feature {
+    transition-property: transform, background-color;
+    transition-duration: 0.2s;
   }
-  
-  .hero {
-    height: 90vh;
-  }
-  
-  .hero-content {
-    max-width: 100%;
-  }
-  
-  .cta-buttons {
-    flex-direction: column;
-    gap: 1rem;
+
+  /* Fix scrolling issues */
+  body.menu-open {
+    overflow: hidden;
+    position: fixed;
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    height: 100%;
   }
-  
-  .btn {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .specs-list {
-    grid-template-columns: 1fr;
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .newsletter-form {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .newsletter-form input,
-  .newsletter-form button {
-    width: 100%;
-    border-radius: var(--border-radius);
-  }
-  
-  /* Improved team carousel on mobile */
-  .team-member {
-    min-width: 85%;
-  }
-  
-  .carousel-arrow {
-    width: 40px;
-    height: 40px;
+
+  /* Enhance visibility of mobile menu items */
+  .navbar ul li a {
+    padding: 0.8rem 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -1624,36 +1645,36 @@ img {
   .section-header {
     margin-bottom: clamp(1.5rem, 3vw, 2rem);
   }
-  
+
   .service-card,
   .feature,
   .achievement,
   .partner {
     padding: clamp(1.25rem, 2.5vw, 1.5rem);
   }
-  
+
   .tabs-nav {
     flex-direction: column;
   }
-  
+
   .tab-btn {
     width: 100%;
     text-align: center;
   }
-  
+
   .project-overlay {
     padding: 1rem;
   }
-  
+
   .service-features li {
     padding-left: 1.2rem;
     margin-bottom: 0.7rem;
     line-height: 1.4;
   }
-  
+
   /* Ensure buttons are easily clickable on mobile */
-  button, 
-  .btn, 
+  button,
+  .btn,
   .contact-btn,
   select,
   input[type="submit"] {
@@ -1693,6 +1714,29 @@ img {
 .carousel-arrow,
 .btn {
   will-change: transform;
+}
+
+/* Loading optimizations */
+img {
+  loading: lazy;
+}
+
+/* CSS transitions optimizations - only animate opacity and transform */
+.service-card,
+.feature,
+.project-overlay,
+.gallery-overlay,
+.team-member,
+.guarantee,
+.partner-logo,
+.achievement {
+  will-change: transform, opacity;
+}
+
+/* Preconnect to critical resources */
+html::before {
+  content: "";
+  display: none;
 }
 
 /* Loading optimizations */
